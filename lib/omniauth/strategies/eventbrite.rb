@@ -5,7 +5,6 @@ module OmniAuth
     class Eventbrite < OmniAuth::Strategies::OAuth2
       DEFAULT_RESPONSE_TYPE = 'code'
       DEFAULT_GRANT = 'authorization_code'
-      INFO_URL = 'https://www.eventbriteapi.com/v3/users/me/'.freeze
 
       option :name, 'eventbrite'
 
@@ -14,6 +13,7 @@ module OmniAuth
       # @note :ref is a referral code for the Referral Program.
       option :authorize_options, [:ref]
       option :client_options, site: 'https://www.eventbrite.com',
+                              api_url: 'https://www.eventbriteapi.com/v3',
                               authorize_url: '/oauth/authorize',
                               token_url: '/oauth/token'
 
@@ -44,7 +44,10 @@ module OmniAuth
       #
       # @return [Hash]
       def raw_info
-        @raw_info ||= access_token.get('/v3/users/me/').parsed || {}
+        @raw_info ||= begin
+          info_url = client.options[:api_url] + '/users/me/'
+          access_token.get(info_url).parsed || {}
+        end
       end
 
       # The OAuth2 client authentication parameters.
