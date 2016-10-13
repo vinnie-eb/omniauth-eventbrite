@@ -44,7 +44,7 @@ module OmniAuth
       #
       # @return [Hash]
       def raw_info
-        @raw_info ||= access_token.get(INFO_URL).parsed || {}
+        @raw_info ||= access_token.get('/v3/users/me/').parsed || {}
       end
 
       # The OAuth2 client authentication parameters.
